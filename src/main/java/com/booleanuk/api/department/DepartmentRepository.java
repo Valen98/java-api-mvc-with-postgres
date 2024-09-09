@@ -1,20 +1,21 @@
 package com.booleanuk.api.department;
 
-import com.booleanuk.api.employee.Employee;
-import com.booleanuk.api.employee.departmentRepository;
-import org.springframework.web.bind.annotation.*;
+import com.booleanuk.api.server.ServerConnection;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 
 public class DepartmentRepository {
+    private Connection connection = ServerConnection.getInstance();
+
+    public DepartmentRepository() throws SQLException {
+    }
+
+
     public ArrayList<Department> getAll() throws SQLException {
         ArrayList<Department> departments = new ArrayList<>();
-        PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM department");
+        PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM departments");
 
         ResultSet result = statement.executeQuery();
 
@@ -31,7 +32,7 @@ public class DepartmentRepository {
     }
 
     public Department get(long id) throws SQLException {
-        PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM department WHERE id = ?");
+        PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM departments WHERE id = ?");
         statement.setLong(1, id);
         ResultSet results = statement.executeQuery();
         Department department = null;
@@ -76,7 +77,7 @@ public class DepartmentRepository {
     }
 
     public Department add(Department department) throws SQLException {
-        String SQL = "INSERT INTO department(name, location) VALUES(?, ?)";
+        String SQL = "INSERT INTO departments(name, location) VALUES(?, ?)";
         PreparedStatement statement = this.connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, department.getName());
         statement.setString(2, department.getLocation());
